@@ -1,4 +1,4 @@
-const { Users, Thoughts } = require('../models');
+const { Users} = require('../models');
 
 const usercontrollers = {
     async getUsers (req, res) {
@@ -47,7 +47,7 @@ const usercontrollers = {
     async addFriend (req, res) {
         try {
             const newFriend = await Users.findOneAndUpdate({_id: req.params.userId}, {$addToSet: {friends: {_id: req.params.friendId}}})
-            res.json("Congratulations! You made a new friend!")
+            res.json("You made a new friend!")
         }catch (err) {
             console.log(err)
             res.status(500).json(err)
