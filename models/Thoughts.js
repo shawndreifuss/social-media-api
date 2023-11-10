@@ -1,6 +1,9 @@
-const { Schema, Types, model } = require('mongoose');
-const reactionSchema = require('./Reactions');
-const userThoughtsSchema = new Schema(
+// Imports
+const { Schema, model } = require("mongoose");
+const reactionSchema = require("./Reactions");
+
+// Thought schema
+const thoughtSchema = new Schema(
   {
     thoughtText: {
       type: String,
@@ -11,28 +14,28 @@ const userThoughtsSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      get: function(value) {
-        return value.toDateString()
     },
     username: {
       type: String,
       required: true,
     },
-    },
     reactions: [reactionSchema],
   },
   {
-    toJSON: { 
-      getters: true,
+    toJSON: {
+      virtuals: true,
     },
-    id: false, 
+    id: false,
   }
 );
 
-userThoughtsSchema
-.virtual('reactionsCount')
-.get( function() {
-  return this.reactions.length
-})
-const Thoughts = model('thoughts', userThoughtsSchema);
-module.exports = Thoughts;
+
+thoughtSchema.virtual("reactionCount").get(function () {
+  return this.reactions.length;
+});
+
+// Creates Thought model with thoughtSchema
+const Thought = model("thought", thoughtSchema);
+
+// Exports
+module.exports = Thought;

@@ -1,44 +1,48 @@
-const { Schema, Types, model } = require('mongoose');
+// Imports
+const { Schema, model } = require("mongoose");
+
+// User schema
 const userSchema = new Schema(
   {
     username: {
       type: String,
-      unique: true, 
+      unique: true,
       required: true,
-      trimmed: true,
+      trim: true,
     },
     email: {
       type: String,
-      unique: true, 
       required: true,
-      validate: function(v) {
-        return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v)
-      },
+      unique: true,
+      match: [/.+@.+\..+/, "Must match an email address!"],
     },
     thoughts: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Thoughts'
-        },
+      {
+        type: Schema.Types.ObjectId,
+        ref: "thought",
+      },
     ],
     friends: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Users'
-        }
+      {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
     ],
   },
   {
-    toJSON: { 
-      getters: true, 
+    toJSON: {
+      virtuals: true,
     },
-    id: false 
+    id: false,
   }
 );
-userSchema
-.virtual('friendCount')
-.get( function() {
-  return this.friends.length
-})
-const Users = model('user', userSchema);
-module.exports = Users;
+
+// Increases friend count in User model object when friends are added by a user
+userSchema.virtual("friendCount").get(function () {
+  return this.friends.length;
+});
+
+const User = model("user", userSchema);
+
+// Exports
+module.exports = User;
